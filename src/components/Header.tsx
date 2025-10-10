@@ -11,23 +11,28 @@ export function Header() {
       <div className="flex h-8 items-center justify-between w-full">
         <div className="flex items-center gap-2 font-bold">
           <NavButton icon={HomeIcon} label="Home" href="/home" />
-          <Link
-            href="/home"
-            className="flex items-center gap-2"
-            title="Home"
-          >
-            <h1 className="hidden sm:block text-xl font-bold m-0">Computer Repair Shop</h1>
+          <Link href="/home" className="flex items-center gap-2" title="Home">
+            <h1 className="hidden sm:block text-xl font-bold m-0">
+              Computer Repair Shop
+            </h1>
           </Link>
         </div>
         <div className="flex flex-center">
-            <NavButton icon={UsersRound} label="Customers" href="/customers" />
-            <NavButton icon={File} label="Tickets" href="/tickets" />
-            <ModeToggle />
-            <Button className="rounded-full" variant="ghost" size="icon" aria-label="LogOut" title="Log Out" asChild>
+          <NavButton icon={UsersRound} label="Customers" href="/customers" />
+          <NavButton icon={File} label="Tickets" href="/tickets" />
+          <ModeToggle />
+          <Button
+            className="rounded-full"
+            variant="ghost"
+            size="icon"
+            aria-label="LogOut"
+            title="Log Out"
+            asChild
+          >
             <LogoutLink>
               <LogOut />
             </LogoutLink>
-            </Button>
+          </Button>
         </div>
       </div>
     </header>
