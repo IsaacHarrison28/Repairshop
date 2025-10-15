@@ -6,7 +6,9 @@ import TicketForm from "../form/TicketForm";
 
 export default async function ticketFormPage({
   searchParams,
-}: Promise<{ [key: string]: string | undefined }>) {
+}: {
+  searchParams: { [key: string]: string | undefined };
+}) {
   try {
     const { ticketId, customerId } = await searchParams;
 
@@ -44,7 +46,6 @@ export default async function ticketFormPage({
       }
 
       console.log(customer);
-
       return <TicketForm customer={customer} />;
     }
 
