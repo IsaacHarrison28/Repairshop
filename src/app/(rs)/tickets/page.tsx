@@ -1,11 +1,9 @@
-import { Metadata } from "next"
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Tickets"
-}
+  title: "Tickets",
+};
 
 export default function Tickets() {
-    return (
-        <div>Tickets page</div>
-    )
+  return <div>Tickets page</div>;
 }

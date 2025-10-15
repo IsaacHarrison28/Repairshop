@@ -1,0 +1,40 @@
+import { getCustomer } from "@/lib/queries/getCustomer";
+import { BackButton } from "@/components/backButton";
+import * as Sentry from "@sentry/nextjs";
+import { CustomerForm } from "@/app/(rs)/customers/form/CustomerForm";
+
+export default async function customerFormPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | undefined }>;
+}) {
+  try {
+    const { customerId } = await searchParams;
+
+    //edit customer
+    if (customerId) {
+      const customer = await getCustomer(Number(customerId));
+      if (!customer) {
+        return (
+          <>
+            <h2 className="text-2xl">Customer of ID {customerId} not found!</h2>
+
+            <BackButton title="Go back" variant="outline" className="mt-4" />
+          </>
+        );
+        throw new Error("Customer not found");
+      }
+
+      console.log(customer);
+      return <CustomerForm customer={customer} />;
+    } else {
+      //new customer form component
+      return <CustomerForm />;
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      Sentry.captureException(error);
+      throw new Error(error.message);
+    }
+  }
+}
