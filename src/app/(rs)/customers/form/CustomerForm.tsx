@@ -82,6 +82,7 @@ export function CustomerForm({ customer }: props) {
               nameInSchema="notes"
               placeholder="Notes"
               className="h-20"
+              value={customer ? customer.notes ?? "" : ""}
             />
             <div className="flex gap-2 mt-4">
               <Button
