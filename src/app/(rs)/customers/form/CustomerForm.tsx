@@ -92,7 +92,7 @@ export function CustomerForm({ customer }: props) {
             />
             {isLoading ? (
               <p>Loading...</p>
-            ) : isManager ? (
+            ) : isManager && customer?.id ? (
               <div className="mt-2">
                 <CheckBoxWithLabel<InsertCustomerSchemaType>
                   fieldTitle="Active"
