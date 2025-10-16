@@ -6,6 +6,21 @@ import TicketForm from "../form/TicketForm";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { Users, init as KindeInit } from "@kinde/management-api-js";
 
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | undefined };
+}) {
+  const { ticketId, customerId } = await searchParams;
+  if (customerId) {
+    return { title: "New Ticket Form" };
+  }
+  if (ticketId) {
+    return { title: `Edit Ticket #${ticketId}` };
+  }
+  return { title: "Ticket Form" };
+}
+
 export default async function ticketFormPage({
   searchParams,
 }: {
