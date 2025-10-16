@@ -93,11 +93,13 @@ export function CustomerForm({ customer }: props) {
             {isLoading ? (
               <p>Loading...</p>
             ) : isManager ? (
-              <CheckBoxWithLabel<InsertCustomerSchemaType>
-                fieldTitle="Active"
-                nameInSchema="active"
-                message="yes"
-              />
+              <div className="mt-2">
+                <CheckBoxWithLabel<InsertCustomerSchemaType>
+                  fieldTitle="Active"
+                  nameInSchema="active"
+                  message="yes"
+                />
+              </div>
             ) : null}
 
             <div className="flex gap-2 mt-4">

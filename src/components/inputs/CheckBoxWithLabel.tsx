@@ -14,12 +14,14 @@ type props<S> = {
   fieldTitle: string;
   nameInSchema: keyof S & string;
   message: string;
+  disabled?: boolean;
 };
 
 export function CheckBoxWithLabel<S>({
   fieldTitle,
   nameInSchema,
   message,
+  disabled = false,
   ...props
 }: props<S>) {
   const form = useFormContext();
@@ -29,23 +31,20 @@ export function CheckBoxWithLabel<S>({
       control={form.control}
       name={nameInSchema}
       render={({ field }) => (
-        <FormItem className="w-full flex items-center gap-2">
-          <FormLabel className="text-base w-1/3 mt-2" htmlFor={nameInSchema}>
+        <FormItem className="w-full flex items-center gap-4">
+          <FormLabel className="text-base w-1/3" htmlFor={nameInSchema}>
             {fieldTitle}
           </FormLabel>
-
-          <div className="flex items-center gap-2">
-            <FormControl>
-              <Checkbox
-                id={nameInSchema}
-                {...field}
-                checked={field.value as boolean}
-                onCheckedChange={field.onChange}
-              />
-            </FormControl>
-            {message}
-          </div>
-
+          <FormControl>
+            <Checkbox
+              id={nameInSchema}
+              {...field}
+              checked={field.value as boolean}
+              onCheckedChange={field.onChange}
+              disabled={disabled}
+            />
+          </FormControl>
+          <span className="text-sm">{message}</span>
           <FormMessage />
         </FormItem>
       )}

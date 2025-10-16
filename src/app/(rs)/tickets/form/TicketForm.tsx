@@ -13,13 +13,23 @@ import {
   type InsertTicketSchemaType,
   type SelectTicketSchemaType,
 } from "@/zod-schemas/ticket";
+import { SelectWithLabel } from "@/components/inputs/SelectWithLabel";
 
 type props = {
   ticket?: SelectTicketSchemaType | null;
   customer?: SelectCustomerSchemaType | null;
+  techs?: { id: string; description: string }[];
+  isEditable?: boolean;
 };
 
-export default function TicketForm({ ticket, customer }: props) {
+export default function TicketForm({
+  ticket,
+  customer,
+  techs,
+  isEditable = true,
+}: props) {
+  const isManager = Array.isArray(techs);
+
   const defaultValues: InsertTicketSchemaType = {
     id: ticket?.id ?? "(New)",
     title: ticket?.title ?? "",
@@ -43,7 +53,11 @@ export default function TicketForm({ ticket, customer }: props) {
     <div className="flex flex-col gap-1 sm:px-8">
       <div>
         <h2 className="text-2xl font-bold">
-          {ticket ? `Edit Ticket #${ticket.id}` : "New Ticket"}
+          {ticket?.id && isEditable
+            ? `Edit Ticket # ${ticket.id}`
+            : ticket?.id
+            ? `View Ticket # ${ticket.id}`
+            : "New Ticket Form"}
         </h2>
       </div>
       <Form {...form}>
@@ -56,18 +70,37 @@ export default function TicketForm({ ticket, customer }: props) {
               fieldTitle="Title"
               nameInSchema="title"
               placeholder="Title"
+              disabled={!isEditable}
             />
-            <InputWithLabel<InsertTicketSchemaType>
-              fieldTitle="Tech"
-              nameInSchema="tech"
-              placeholder="Tech"
-              disabled={true}
-            />
-            <CheckBoxWithLabel<InsertTicketSchemaType>
-              fieldTitle="Completed"
-              nameInSchema="completed"
-              message={ticket?.completed ? "Completed" : "Not Completed"}
-            />
+            {isManager ? (
+              <SelectWithLabel<InsertTicketSchemaType>
+                fieldTitle="Tech ID"
+                nameInSchema="tech"
+                data={[
+                  {
+                    id: "newticket@example.com",
+                    description: "newticket@example.com",
+                  },
+                  ...(techs ?? []),
+                ]}
+              />
+            ) : (
+              <InputWithLabel<InsertTicketSchemaType>
+                fieldTitle="Tech"
+                nameInSchema="tech"
+                placeholder="Tech"
+                disabled={true}
+                value={ticket ? ticket.tech ?? "" : ""}
+              />
+            )}
+            {ticket?.id ? (
+              <CheckBoxWithLabel<InsertTicketSchemaType>
+                fieldTitle="Completed"
+                nameInSchema="completed"
+                message={ticket?.completed ? "Completed" : "Not Completed"}
+                disabled={!isEditable}
+              />
+            ) : null}
             <div className="mt-4 space-y-2">
               <h3 className="text-lg">Customer Info</h3>
               <hr className="w-4/5" />
@@ -87,29 +120,32 @@ export default function TicketForm({ ticket, customer }: props) {
               placeholder="Description"
               className="h-40"
               value={ticket ? ticket.description ?? "" : ""}
+              disabled={!isEditable}
             />
 
-            <div className="flex gap-2 mt-4">
-              <Button
-                type="submit"
-                className="w-3/4"
-                variant="default"
-                title="Save"
-              >
-                Save
-              </Button>
-              <Button
-                type="button"
-                variant="destructive"
-                className="cursor-pointer"
-                title="Reset"
-                onClick={() => {
-                  form.reset(defaultValues);
-                }}
-              >
-                Reset
-              </Button>
-            </div>
+            {isEditable ? (
+              <div className="flex gap-2 mt-4">
+                <Button
+                  type="submit"
+                  className="w-3/4"
+                  variant="default"
+                  title="Save"
+                >
+                  Save
+                </Button>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  className="cursor-pointer"
+                  title="Reset"
+                  onClick={() => {
+                    form.reset(defaultValues);
+                  }}
+                >
+                  Reset
+                </Button>
+              </div>
+            ) : null}
           </div>
         </form>
       </Form>

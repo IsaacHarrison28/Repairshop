@@ -3,6 +3,8 @@ import { getTicket } from "@/lib/queries/getTicket";
 import { getCustomer } from "@/lib/queries/getCustomer";
 import * as Sentry from "@sentry/nextjs";
 import TicketForm from "../form/TicketForm";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { Users, init as KindeInit } from "@kinde/management-api-js";
 
 export default async function ticketFormPage({
   searchParams,
@@ -21,8 +23,15 @@ export default async function ticketFormPage({
       );
     }
 
-    //New ticket form
+    const { getPermission, getUser } = getKindeServerSession();
+    const [managerPermission, user] = await Promise.all([
+      getPermission("manager"),
+      getUser(),
+    ]);
 
+    const isManager = managerPermission?.isGranted;
+
+    //New ticket form
     if (customerId) {
       const customer = await getCustomer(Number(customerId));
       if (!customer) {
@@ -45,10 +54,21 @@ export default async function ticketFormPage({
         );
       }
 
-      console.log(customer);
-      return <TicketForm customer={customer} />;
+      if (isManager) {
+        KindeInit; //initializes kinde management API
+        const { users } = await Users.getUsers();
+
+        const techs = users
+          ? users.map((user) => ({ id: user.email!, description: user.email! }))
+          : [];
+
+        return <TicketForm customer={customer} techs={techs} />;
+      } else {
+        return <TicketForm customer={customer} />;
+      }
     }
 
+    //Edit ticket form
     if (ticketId) {
       const ticket = await getTicket(Number(ticketId));
       if (!ticket) {
@@ -64,10 +84,25 @@ export default async function ticketFormPage({
       const customer = await getCustomer(ticket.customerId);
 
       //return ticket form with customer data
-      console.log("ticket", ticket);
-      console.log("customer", customer);
+      if (isManager) {
+        KindeInit; //initializes kinde management API
+        const { users } = await Users.getUsers();
 
-      return <TicketForm ticket={ticket} customer={customer} />;
+        const techs = users
+          ? users.map((user) => ({ id: user.email!, description: user.email! }))
+          : [];
+
+        return <TicketForm customer={customer} ticket={ticket} techs={techs} />;
+      } else {
+        const isEditable = user?.email === ticket.tech;
+        return (
+          <TicketForm
+            customer={customer}
+            ticket={ticket}
+            isEditable={isEditable}
+          />
+        );
+      }
     }
   } catch (error) {
     if (error instanceof Error) {
