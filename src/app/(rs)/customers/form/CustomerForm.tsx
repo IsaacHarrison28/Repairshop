@@ -5,6 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { InputWithLabel } from "@/components/inputs/InputWithLabel";
+import { CheckBoxWithLabel } from "@/components/inputs/CheckBoxWithLabel";
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import {
   customerInsertSchema,
   type InsertCustomerSchemaType,
@@ -17,6 +19,9 @@ type props = {
 };
 
 export function CustomerForm({ customer }: props) {
+  const { getPermission, isLoading } = useKindeBrowserClient();
+  const isManager = !isLoading && getPermission("manager")?.isGranted;
+
   const defaultValues: InsertCustomerSchemaType = {
     id: customer?.id ?? 0,
     firstName: customer?.firstName ?? "",
@@ -24,6 +29,7 @@ export function CustomerForm({ customer }: props) {
     email: customer?.email ?? "",
     phone: customer?.phone ?? "",
     address: customer?.address ?? "",
+    active: customer?.active ?? true,
   };
 
   const form = useForm<InsertCustomerSchemaType>({
@@ -84,6 +90,16 @@ export function CustomerForm({ customer }: props) {
               className="h-20"
               value={customer ? customer.notes ?? "" : ""}
             />
+            {isLoading ? (
+              <p>Loading...</p>
+            ) : isManager ? (
+              <CheckBoxWithLabel<InsertCustomerSchemaType>
+                fieldTitle="Active"
+                nameInSchema="active"
+                message="yes"
+              />
+            ) : null}
+
             <div className="flex gap-2 mt-4">
               <Button
                 type="submit"
