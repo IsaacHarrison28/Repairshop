@@ -6,13 +6,17 @@ import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { InputWithLabel } from "@/components/inputs/InputWithLabel";
 import { CheckBoxWithLabel } from "@/components/inputs/CheckBoxWithLabel";
+import { TextAreaWithLabel } from "@/components/inputs/TextAreaWithLabel";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import { toast } from "sonner";
+import { LoaderCircle } from "lucide-react";
 import {
   customerInsertSchema,
   type InsertCustomerSchemaType,
   type SelectCustomerSchemaType,
 } from "@/zod-schemas/customer";
-import { TextAreaWithLabel } from "@/components/inputs/TextAreaWithLabel";
+import { useAction } from "next-safe-action/hooks";
+import { saveCustomerAction } from "@/app/actions/saveCustomerActions";
 
 type props = {
   customer?: SelectCustomerSchemaType | null;
@@ -38,8 +42,25 @@ export function CustomerForm({ customer }: props) {
     defaultValues,
   });
 
+  const {
+    execute: executeSave,
+    result: saveResult,
+    isExecuting: isSaving,
+    reset: resetSaveAction,
+  } = useAction(saveCustomerAction, {
+    onSuccess({ data }) {
+      //toast the user
+      toast.success("Sucess! 🎉");
+    },
+    onError({ error }) {
+      //toast the user to display the error
+      toast.error("Failed to save!");
+    },
+  });
+
   async function submitForm(data: InsertCustomerSchemaType) {
-    console.log(data);
+    // console.log(data);
+    executeSave(data);
   }
 
   return (
@@ -108,8 +129,15 @@ export function CustomerForm({ customer }: props) {
                 className="w-3/4"
                 variant="default"
                 title="Save"
+                disabled={isSaving}
               >
-                Save
+                {isSaving ? (
+                  <>
+                    <LoaderCircle className="animate-spin" /> Saving
+                  </>
+                ) : (
+                  "Save"
+                )}
               </Button>
               <Button
                 type="button"
@@ -118,6 +146,7 @@ export function CustomerForm({ customer }: props) {
                 title="Reset"
                 onClick={() => {
                   form.reset(defaultValues);
+                  resetSaveAction();
                 }}
               >
                 Reset
