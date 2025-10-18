@@ -21,7 +21,7 @@ export const actionClient = createSafeActionClient({
       return scope;
     });
 
-    if (e.constructor.name === "DatabaseError") {
+    if (e.constructor.name === "DrizzleQueryError") {
       return "Database error. Your data did not save. Support will be notified.";
     }
 
