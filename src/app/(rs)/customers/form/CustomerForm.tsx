@@ -111,6 +111,8 @@ export function CustomerForm({ customer }: props) {
               nameInSchema="notes"
               placeholder="Notes"
               className="h-20"
+              // show existing notes only when editing an existing customer
+              defaultValue={customer?.id ? customer?.notes ?? "" : undefined}
             />
             {isLoading ? (
               <p>Loading...</p>
