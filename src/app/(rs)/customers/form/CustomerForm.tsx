@@ -51,11 +51,11 @@ export function CustomerForm({ customer }: props) {
   } = useAction(saveCustomerAction, {
     onSuccess({ data }) {
       //toast the user
-      toast.success("Sucess! 🎉");
+      toast.success("Success! 🎉", { description: data?.message });
     },
     onError({ error }) {
       //toast the user to display the error
-      toast.error("Failed to save!");
+      toast.error("Error!", { description: "Failed to save!" });
     },
   });
 
@@ -111,7 +111,6 @@ export function CustomerForm({ customer }: props) {
               nameInSchema="notes"
               placeholder="Notes"
               className="h-20"
-              value={customer ? customer.notes ?? "" : ""}
             />
             {isLoading ? (
               <p>Loading...</p>
