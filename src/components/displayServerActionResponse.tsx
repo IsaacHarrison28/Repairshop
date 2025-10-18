@@ -1,11 +1,11 @@
-type props = {
-  result: {
-    data?: {
-      message?: string;
-    };
-    serverError: string;
-    validationError: { [fieldName: string]: string[] | undefined };
-  };
+type ServerActionResult = {
+  data?: { message?: string };
+  serverError?: string | null;
+  validationError?: Record<string, string> | null;
+};
+
+type Props = {
+  result: ServerActionResult;
 };
 
 const MessageBox = ({
@@ -26,24 +26,29 @@ const MessageBox = ({
   );
 };
 
-export function DisplayServerActionResult({ result }: props) {
+export function DisplayServerActionResult({ result }: Props) {
   const { data, serverError, validationError } = result;
-  <div>
-    {data?.message && (
-      <MessageBox type="success" content={`success: ${data?.message}`} />
-    )}
 
-    {serverError && <MessageBox type="error" content={serverError} />}
+  return (
+    <div>
+      {data?.message && (
+        <MessageBox type="success" content={`success: ${data.message}`} />
+      )}
 
-    {validationError && (
-      <MessageBox
-        type="error"
-        content={Object.keys(validationError).map((key) => (
-          <p key={key}>
-            {`${key} : ${validationError[key as keyof typeof validationError]}`}
-          </p>
-        ))}
-      />
-    )}
-  </div>;
+      {serverError && <MessageBox type="error" content={serverError} />}
+
+      {validationError && (
+        <MessageBox
+          type="error"
+          content={Object.keys(validationError).map((key) => (
+            <p key={key}>
+              {`${key} : ${
+                validationError[key as keyof typeof validationError]
+              }`}
+            </p>
+          ))}
+        />
+      )}
+    </div>
+  );
 }

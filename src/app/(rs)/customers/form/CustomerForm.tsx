@@ -17,6 +17,7 @@ import {
 } from "@/zod-schemas/customer";
 import { useAction } from "next-safe-action/hooks";
 import { saveCustomerAction } from "@/app/actions/saveCustomerActions";
+import { DisplayServerActionResult } from "@/components/displayServerActionResponse";
 
 type props = {
   customer?: SelectCustomerSchemaType | null;
@@ -65,6 +66,7 @@ export function CustomerForm({ customer }: props) {
 
   return (
     <div className="flex flex-col gap-1 sm:px-8">
+      <DisplayServerActionResult result={saveResult} />
       <div>
         <h2 className="text-2xl font-bold">
           {customer ? "Edit Customer" : "Add Customer"}
