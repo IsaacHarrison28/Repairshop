@@ -14,6 +14,11 @@ import {
   type SelectTicketSchemaType,
 } from "@/zod-schemas/ticket";
 import { SelectWithLabel } from "@/components/inputs/SelectWithLabel";
+import { useAction } from "next-safe-action/hooks";
+import { saveTicketAction } from "@/app/actions/saveTicketActions";
+import { toast } from "sonner";
+import { DisplayServerActionResult } from "@/components/displayServerActionResponse";
+import { LoaderCircle } from "lucide-react";
 
 type props = {
   ticket?: SelectTicketSchemaType | null;
@@ -45,12 +50,30 @@ export default function TicketForm({
     mode: "onBlur",
   });
 
+  const {
+    execute: executeSave,
+    result: saveResult,
+    isExecuting: isSaving,
+    reset: resetSaveAction,
+  } = useAction(saveTicketAction, {
+    onSuccess({ data }) {
+      //toast the user
+      toast.success("Success! 🎉", { description: data?.message });
+    },
+    onError({ error }) {
+      //toast the user to display the error
+      toast.error("Error!", { description: "Failed to save!" });
+    },
+  });
+
   async function submitForm(data: InsertTicketSchemaType) {
-    console.log(data);
+    // console.log(data);
+    executeSave(data);
   }
 
   return (
     <div className="flex flex-col gap-1 sm:px-8">
+      <DisplayServerActionResult result={saveResult} />
       <div>
         <h2 className="text-2xl font-bold">
           {ticket?.id && isEditable
@@ -81,7 +104,7 @@ export default function TicketForm({
                     id: "newticket@example.com",
                     description: "newticket@example.com",
                   },
-                  ...(techs ?? []),
+                  ...techs,
                 ]}
               />
             ) : (
@@ -90,7 +113,6 @@ export default function TicketForm({
                 nameInSchema="tech"
                 placeholder="Tech"
                 disabled={true}
-                value={ticket ? ticket.tech ?? "" : ""}
               />
             )}
             {ticket?.id ? (
@@ -119,7 +141,7 @@ export default function TicketForm({
               nameInSchema="description"
               placeholder="Description"
               className="h-40"
-              value={ticket ? ticket.description ?? "" : ""}
+              defaultValue={ticket?.id ? ticket?.description ?? "" : undefined}
               disabled={!isEditable}
             />
 
@@ -130,8 +152,15 @@ export default function TicketForm({
                   className="w-3/4"
                   variant="default"
                   title="Save"
+                  disabled={isSaving}
                 >
-                  Save
+                  {isSaving ? (
+                    <>
+                      <LoaderCircle className="animate-spin" /> Saving
+                    </>
+                  ) : (
+                    "Save"
+                  )}
                 </Button>
                 <Button
                   type="button"
@@ -140,6 +169,7 @@ export default function TicketForm({
                   title="Reset"
                   onClick={() => {
                     form.reset(defaultValues);
+                    resetSaveAction();
                   }}
                 >
                   Reset

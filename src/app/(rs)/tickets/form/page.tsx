@@ -11,7 +11,7 @@ export async function generateMetadata({
 }: {
   searchParams: { [key: string]: string | undefined };
 }) {
-  const { ticketId, customerId } = await searchParams;
+  const { ticketId, customerId } = searchParams;
   if (customerId) {
     return { title: "New Ticket Form" };
   }
@@ -27,7 +27,7 @@ export default async function ticketFormPage({
   searchParams: { [key: string]: string | undefined };
 }) {
   try {
-    const { ticketId, customerId } = await searchParams;
+    const { ticketId, customerId } = searchParams;
 
     if (!customerId && !ticketId) {
       return (
@@ -70,7 +70,13 @@ export default async function ticketFormPage({
       }
 
       if (isManager) {
-        KindeInit; //initializes kinde management API
+        //initialize the Kinde Management API
+        KindeInit({
+          kindeDomain: process.env.KINDE_DOMAIN!,
+          clientId: process.env.KINDE_MANAGEMENT_CLIENT_ID!,
+          clientSecret: process.env.KINDE_MANAGEMENT_CLIENT_SECRET!,
+        });
+
         const { users } = await Users.getUsers();
 
         const techs = users
@@ -122,7 +128,10 @@ export default async function ticketFormPage({
   } catch (error) {
     if (error instanceof Error) {
       Sentry.captureException(error);
-      throw new Error(error.message);
+      throw error;
+    } else {
+      Sentry.captureException(error);
+      throw new Error(String(error));
     }
   }
 }
