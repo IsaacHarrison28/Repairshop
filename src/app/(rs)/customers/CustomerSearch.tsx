@@ -6,7 +6,7 @@ export default function SearchCustomer() {
   return (
     <Form action="/customers" className="flex gap-2 items-center ">
       <Input
-        name="SeachText"
+        name="SearchText"
         type="text"
         placeholder="Search Customers"
         className="w-full"
