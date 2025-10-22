@@ -46,12 +46,14 @@ export function CustomerForm({ customer }: props) {
   const {
     execute: executeSave,
     result: saveResult,
-    isExecuting: isSaving,
+    isPending: isSaving,
     reset: resetSaveAction,
   } = useAction(saveCustomerAction, {
     onSuccess({ data }) {
-      //toast the user
-      toast.success("Success! 🎉", { description: data?.message });
+      if (data?.message) {
+        //toast the user
+        toast.success("Success! 🎉", { description: data.message });
+      }
     },
     onError({ error }) {
       //toast the user to display the error
