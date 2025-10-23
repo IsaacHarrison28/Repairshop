@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { Customers } from "@/db/schema";
-import { ilike, or } from "drizzle-orm";
+import { ilike, or, sql } from "drizzle-orm";
 
 export async function getCustomerSearchResults(SearchText: string) {
   const results = await db
@@ -12,7 +12,9 @@ export async function getCustomerSearchResults(SearchText: string) {
         ilike(Customers.lastName, `%${SearchText}%`),
         ilike(Customers.email, `%${SearchText}%`),
         ilike(Customers.phone, `%${SearchText}%`),
-        ilike(Customers.notes, `%${SearchText}%`)
+        sql`lower(concat(${Customers.firstName}, ' ', ${
+          Customers.lastName
+        })) LIKE ${`%${SearchText.toLocaleLowerCase().replace(" ", "%")}%`}`
       )
     );
   return results;
