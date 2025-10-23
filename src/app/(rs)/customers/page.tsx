@@ -19,7 +19,11 @@ export default async function Customers({
   return (
     <>
       <SearchCustomer />
-      <p>{JSON.stringify(results)}</p>
+      {results?.length === 0 ? (
+        <p className="capitalize">No customer found matching the search</p>
+      ) : (
+        <p>{JSON.stringify(results)}</p>
+      )}
     </>
   );
 }
