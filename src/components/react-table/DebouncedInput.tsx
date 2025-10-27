@@ -1,3 +1,5 @@
+"use client";
+
 import { InputHTMLAttributes, useEffect, useState } from "react";
 import { Input } from "../ui/input";
 
