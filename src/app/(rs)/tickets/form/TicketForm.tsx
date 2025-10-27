@@ -39,7 +39,7 @@ export default function TicketForm({
     id: ticket?.id ?? "(New)",
     title: ticket?.title ?? "",
     description: ticket?.description ?? "",
-    tech: ticket?.tech ?? "newticket@example.com",
+    tech: ticket?.tech.toLocaleLowerCase() ?? "newticket@example.com",
     customerId: customer?.id ?? 0,
     completed: ticket?.completed ?? false,
   };

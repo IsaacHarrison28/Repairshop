@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import SearchTicket from "./TicketSearch";
 import { getTicketSearchResults } from "@/lib/queries/getTicketSearchResults";
 import { getOpenTickets } from "@/lib/queries/getOpenTickets";
+import TicketTable from "@/app/(rs)/tickets/TicketTable";
 
 export const metadata: Metadata = {
   title: "Search Ticket",
@@ -19,7 +20,7 @@ export default async function Tickets({
     return (
       <>
         <SearchTicket />
-        <p>{JSON.stringify(results)}</p>
+        {results.length ? <TicketTable data={results} /> : null}
       </>
     );
   }
@@ -29,11 +30,7 @@ export default async function Tickets({
   return (
     <>
       <SearchTicket />
-      {results?.length === 0 ? (
-        <p className="capitalize">No Ticket found matching the search</p>
-      ) : (
-        <p>{JSON.stringify(results)}</p>
-      )}
+      {results.length ? <TicketTable data={results} /> : null}
     </>
   );
 }

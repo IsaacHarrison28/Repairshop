@@ -9,9 +9,11 @@ import { Users, init as KindeInit } from "@kinde/management-api-js";
 export async function generateMetadata({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | undefined };
+  searchParams: Promise<{ [key: string]: string | undefined }>;
 }) {
-  const { ticketId, customerId } = searchParams;
+  const resolvedSearchParams = await searchParams;
+  const { ticketId, customerId } = resolvedSearchParams;
+
   if (customerId) {
     return { title: "New Ticket Form" };
   }
@@ -24,10 +26,11 @@ export async function generateMetadata({
 export default async function ticketFormPage({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | undefined };
+  searchParams: Promise<{ [key: string]: string | undefined }>;
 }) {
   try {
-    const { ticketId, customerId } = searchParams;
+    const resolvedSearchParams = await searchParams;
+    const { ticketId, customerId } = resolvedSearchParams;
 
     if (!customerId && !ticketId) {
       return (
@@ -96,7 +99,6 @@ export default async function ticketFormPage({
         return (
           <>
             <h2 className="text-2xl">Ticket of ID {ticketId} not found!</h2>
-
             <BackButton title="Go back" variant="outline" className="mt-4" />
           </>
         );
@@ -106,7 +108,11 @@ export default async function ticketFormPage({
 
       //return ticket form with customer data
       if (isManager) {
-        KindeInit; //initializes kinde management API
+        KindeInit({
+          kindeDomain: process.env.KINDE_DOMAIN!,
+          clientId: process.env.KINDE_MANAGEMENT_CLIENT_ID!,
+          clientSecret: process.env.KINDE_MANAGEMENT_CLIENT_SECRET!,
+        });
         const { users } = await Users.getUsers();
 
         const techs = users

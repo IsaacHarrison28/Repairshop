@@ -41,7 +41,7 @@ export const saveCustomerAction = actionClient
           .values({
             firstName: customer.firstName ?? "",
             lastName: customer.lastName ?? "",
-            email: customer.email ?? "",
+            email: customer.email?.toLocaleLowerCase() ?? "",
             phone: customer.phone ?? "",
             address: customer.address ?? "",
             active: customer.active,
@@ -60,7 +60,7 @@ export const saveCustomerAction = actionClient
           firstName: customer.firstName,
           lastName: customer.lastName,
           address: customer.address,
-          email: customer.email,
+          email: customer.email?.toLocaleLowerCase(),
           notes: customer.notes?.trim() ?? null,
           active: customer.active,
         })
