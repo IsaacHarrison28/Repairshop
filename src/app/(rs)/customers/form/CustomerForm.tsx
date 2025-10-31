@@ -31,7 +31,7 @@ export function CustomerForm({ customer }: props) {
     id: customer?.id ?? 0,
     firstName: customer?.firstName ?? "",
     lastName: customer?.lastName ?? "",
-    email: customer?.email.toLocaleLowerCase() ?? "",
+    email: customer?.email.toLowerCase() ?? "",
     phone: customer?.phone ?? "",
     address: customer?.address ?? "",
     active: customer?.active ?? true,

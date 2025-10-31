@@ -25,6 +25,7 @@ type props = {
   customer?: SelectCustomerSchemaType | null;
   techs?: { id: string; description: string }[];
   isEditable?: boolean;
+  isManager?: boolean | undefined;
 };
 
 export default function TicketForm({
@@ -32,14 +33,13 @@ export default function TicketForm({
   customer,
   techs,
   isEditable = true,
+  isManager = false,
 }: props) {
-  const isManager = Array.isArray(techs);
-
   const defaultValues: InsertTicketSchemaType = {
     id: ticket?.id ?? "(New)",
     title: ticket?.title ?? "",
     description: ticket?.description ?? "",
-    tech: ticket?.tech.toLocaleLowerCase() ?? "newticket@example.com",
+    tech: ticket?.tech.toLowerCase() ?? "newticket@example.com",
     customerId: customer?.id ?? 0,
     completed: ticket?.completed ?? false,
   };
@@ -95,7 +95,7 @@ export default function TicketForm({
               placeholder="Title"
               disabled={!isEditable}
             />
-            {isManager ? (
+            {isManager && techs ? (
               <SelectWithLabel<InsertTicketSchemaType>
                 fieldTitle="Tech ID"
                 nameInSchema="tech"

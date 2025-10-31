@@ -72,6 +72,7 @@ export default async function ticketFormPage({
         );
       }
 
+      //return ticket form
       if (isManager) {
         //initialize the Kinde Management API
         KindeInit({
@@ -83,10 +84,15 @@ export default async function ticketFormPage({
         const { users } = await Users.getUsers();
 
         const techs = users
-          ? users.map((user) => ({ id: user.email!, description: user.email! }))
+          ? users.map((user) => ({
+              id: user.email?.toLowerCase()!,
+              description: user.email?.toLowerCase()!,
+            }))
           : [];
 
-        return <TicketForm customer={customer} techs={techs} />;
+        return (
+          <TicketForm customer={customer} techs={techs} isManager={isManager} />
+        );
       } else {
         return <TicketForm customer={customer} />;
       }
@@ -119,9 +125,17 @@ export default async function ticketFormPage({
           ? users.map((user) => ({ id: user.email!, description: user.email! }))
           : [];
 
-        return <TicketForm customer={customer} ticket={ticket} techs={techs} />;
+        return (
+          <TicketForm
+            customer={customer}
+            ticket={ticket}
+            techs={techs}
+            isManager={isManager}
+          />
+        );
       } else {
-        const isEditable = user?.email === ticket.tech;
+        const isEditable =
+          user?.email?.toLowerCase() === ticket.tech.toLowerCase();
         return (
           <TicketForm
             customer={customer}
