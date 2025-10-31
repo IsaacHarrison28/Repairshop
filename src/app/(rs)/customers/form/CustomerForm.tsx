@@ -17,6 +17,8 @@ import {
 import { useAction } from "next-safe-action/hooks";
 import { saveCustomerAction } from "@/app/actions/saveCustomerActions";
 import { DisplayServerActionResult } from "@/components/displayServerActionResponse";
+import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 
 type props = {
   customer?: SelectCustomerSchemaType | null;
@@ -24,21 +26,40 @@ type props = {
 };
 
 export function CustomerForm({ customer, isManager = false }: props) {
-  const defaultValues: InsertCustomerSchemaType = {
-    id: customer?.id ?? 0,
-    firstName: customer?.firstName ?? "",
-    lastName: customer?.lastName ?? "",
-    email: customer?.email.toLowerCase() ?? "",
-    phone: customer?.phone ?? "",
-    address: customer?.address ?? "",
-    active: customer?.active ?? true,
+  const searchParams = useSearchParams();
+  const hasCustomerId = searchParams.has("customerId");
+
+  const emptyValues: InsertCustomerSchemaType = {
+    id: 0,
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    address: "",
+    active: true,
   };
+
+  const defaultValues: InsertCustomerSchemaType = hasCustomerId
+    ? {
+        id: customer?.id ?? 0,
+        firstName: customer?.firstName ?? "",
+        lastName: customer?.lastName ?? "",
+        email: customer?.email.toLowerCase() ?? "",
+        phone: customer?.phone ?? "",
+        address: customer?.address ?? "",
+        active: customer?.active ?? true,
+      }
+    : emptyValues;
 
   const form = useForm<InsertCustomerSchemaType>({
     mode: "onBlur",
     resolver: zodResolver(customerInsertSchema),
     defaultValues,
   });
+
+  useEffect(() => {
+    form.reset(hasCustomerId ? defaultValues : emptyValues);
+  }, [searchParams.get("customerId")]);
 
   const {
     execute: executeSave,
