@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { InputWithLabel } from "@/components/inputs/InputWithLabel";
 import { CheckBoxWithLabel } from "@/components/inputs/CheckBoxWithLabel";
 import { TextAreaWithLabel } from "@/components/inputs/TextAreaWithLabel";
-import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { toast } from "sonner";
 import { LoaderCircle } from "lucide-react";
 import {
@@ -21,12 +20,10 @@ import { DisplayServerActionResult } from "@/components/displayServerActionRespo
 
 type props = {
   customer?: SelectCustomerSchemaType | null;
+  isManager?: boolean | undefined;
 };
 
-export function CustomerForm({ customer }: props) {
-  const { getPermission, isLoading } = useKindeBrowserClient();
-  const isManager = !isLoading && getPermission("manager")?.isGranted;
-
+export function CustomerForm({ customer, isManager = false }: props) {
   const defaultValues: InsertCustomerSchemaType = {
     id: customer?.id ?? 0,
     firstName: customer?.firstName ?? "",
@@ -116,9 +113,7 @@ export function CustomerForm({ customer }: props) {
               // show existing notes only when editing an existing customer
               defaultValue={customer?.id ? customer?.notes ?? "" : undefined}
             />
-            {isLoading ? (
-              <p>Loading...</p>
-            ) : isManager && customer?.id ? (
+            {isManager && customer?.id ? (
               <div className="mt-2">
                 <CheckBoxWithLabel<InsertCustomerSchemaType>
                   fieldTitle="Active"

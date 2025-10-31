@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { eq, ilike, or, sql, asc } from "drizzle-orm";
-import { tickets, Customers } from "@/db/schema";
+import { tickets, customers } from "@/db/schema";
 
 export async function getTicketSearchResults(SearchText: string) {
   const results = await db
@@ -8,22 +8,22 @@ export async function getTicketSearchResults(SearchText: string) {
       id: tickets.id,
       TicketDate: tickets.createdAt,
       Title: tickets.title,
-      FirstName: Customers.firstName,
-      LastName: Customers.lastName,
-      Email: Customers.email,
+      FirstName: customers.firstName,
+      LastName: customers.lastName,
+      Email: customers.email,
       Tech: tickets.tech,
       Completed: tickets.completed,
     })
     .from(tickets)
-    .leftJoin(Customers, eq(tickets.customerId, Customers.id))
+    .leftJoin(customers, eq(tickets.customerId, customers.id))
     .where(
       or(
         ilike(tickets.title, `%${SearchText}%`),
         ilike(tickets.tech, `%${SearchText}%`),
-        ilike(Customers.email, `%${SearchText}%`),
-        ilike(Customers.phone, `%${SearchText}%`),
-        sql`lower(concat(${Customers.firstName}, ' ', ${
-          Customers.lastName
+        ilike(customers.email, `%${SearchText}%`),
+        ilike(customers.phone, `%${SearchText}%`),
+        sql`lower(concat(${customers.firstName}, ' ', ${
+          customers.lastName
         })) LIKE ${`%${SearchText.toLocaleLowerCase().replace(" ", "%")}%`}`
       )
     )
