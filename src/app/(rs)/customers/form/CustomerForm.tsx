@@ -37,6 +37,7 @@ export function CustomerForm({ customer, isManager = false }: props) {
     phone: "",
     address: "",
     active: true,
+    notes: "",
   };
 
   const defaultValues: InsertCustomerSchemaType = hasCustomerId

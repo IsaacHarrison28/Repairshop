@@ -38,9 +38,6 @@ export const actionClient = createSafeActionClient({
       // Example: "NeonDbError: duplicate key value violates unique constraint "customers_email_unique""
       const cleaned = cleanDatabaseErrorMessage(raw);
 
-      // Log full detail for debugging (optional)
-      console.log("ERROR~~:", raw);
-
       return cleaned || "A database error occurred. Please try again.";
     }
 
