@@ -1,7 +1,6 @@
 import { createSafeActionClient } from "next-safe-action";
 import { z } from "zod";
 import * as Sentry from "@sentry/nextjs";
-import type { NeonDbError } from "@neondatabase/serverless";
 
 export const actionClient = createSafeActionClient({
   defineMetadataSchema() {

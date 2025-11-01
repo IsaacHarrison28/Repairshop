@@ -60,7 +60,7 @@ export default function TicketForm({
       //toast the user
       toast.success("Success! 🎉", { description: data?.message });
     },
-    onError({ error }) {
+    onError() {
       //toast the user to display the error
       toast.error("Error!", { description: "Failed to save!" });
     },

@@ -1,9 +1,6 @@
 "use server";
 
-import {
-  FlattenedValidationErrors,
-  flattenValidationErrors,
-} from "next-safe-action";
+import { flattenValidationErrors } from "next-safe-action";
 import { redirect } from "next/navigation";
 import { db } from "@/db";
 import { tickets } from "@/db/schema";

@@ -1,10 +1,7 @@
 "use server";
 
-import { eq, sql } from "drizzle-orm";
-import {
-  FlattenedValidationErrors,
-  flattenValidationErrors,
-} from "next-safe-action";
+import { eq } from "drizzle-orm";
+import { flattenValidationErrors } from "next-safe-action";
 import { redirect } from "next/navigation";
 import { db } from "@/db";
 import { customers } from "@/db/schema";

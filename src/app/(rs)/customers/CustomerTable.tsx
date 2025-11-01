@@ -26,7 +26,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
-import { useRouter } from "next/navigation";
 import { MoreHorizontal, TableOfContents } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -36,8 +35,6 @@ type Props = {
 };
 
 export default function CustomerTable({ data }: Props) {
-  const router = useRouter();
-
   const columnHeadersArray: Array<keyof SelectCustomerSchemaType> = [
     "firstName",
     "lastName",
