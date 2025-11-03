@@ -32,7 +32,6 @@ export const saveCustomerAction = actionClient
 
       //New customer
       if (customer.id === 0) {
-        // coalesce possibly-undefined strings to ensure types match Drizzle's expected non-optional string types
         const result = await db
           .insert(customers)
           .values({

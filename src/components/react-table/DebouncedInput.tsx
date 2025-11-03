@@ -15,6 +15,7 @@ export function DebouncedInput({
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange">) {
   const [value, setValue] = useState(initialValue);
 
+  //use effect
   useEffect(() => {
     setValue(initialValue);
   }, [initialValue]);
